@@ -7,14 +7,29 @@ LONG WINAPI WndProc(HWND, UINT, WPARAM, LPARAM);
 enum Direction { LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3 };
 int directionChangeX[4] = { -1,1,0,0 };
 int directionChangeY[4] = { 0,0,-1,1 };
+HWND hwndOtherWindow;
+//hwnd okna przekazywany w wParam
+int windowMessageHello = RegisterWindowMessage("Pw.Eiti.Pain.Wzielin3.Lab1.Hello");
+//hwnd okna przekazywany w wParam
+int windowMessageHelloReply = RegisterWindowMessage("Pw.Eiti.Pain.Wzielin3.Lab1.HelloReply");
+//kierunek wê¿a przekazywany w wParam, poziom na krawêdzi przekazywany w lParam
+int windowMessageSnakeTransaction = RegisterWindowMessage("Pw.Eiti.Pain.Wzielin3.Lab1.SnakeTransaction");
+
+class Game
+{
+public:
+	static const int cellWidth = 10;
+	static const int cellHeight = 10;
+	static const int cellsInColumn = 40;
+	static const int cellsInRow = 40;
+	static const int frameTimeMlsc = 50;
+	static const int directionChangeChangePercent = 10;
+};
 
 class SnakeSegment
 {
 public:
-	static const int width = 10;
-	static const int height = 10;
-
-	//described in column and row, not in pixels
+	//wartoœæ logiczna na szachownicy o polach o wielkoœci width na height
 	int positionX;
 	int positionY;
 
@@ -34,9 +49,9 @@ public:
 		}
 		SelectObject(*hdc, hPen);
 		SelectObject(*hdc, hBrush);
-		int xPx = positionX * SnakeSegment::width;
-		int yPx = positionY * SnakeSegment::height;
-		Rectangle(*hdc, xPx, yPx, xPx + width, yPx + height);
+		int xPx = positionX * Game::cellWidth;
+		int yPx = positionY * Game::cellHeight;
+		Rectangle(*hdc, xPx, yPx, xPx + Game::cellWidth, yPx + Game::cellHeight);
 		DeleteObject(hPen);
 		DeleteObject(hBrush);
 	}
@@ -49,9 +64,40 @@ public:
 	Direction currentDirection;
 	int segmentsToGrow = 5;
 
-	Snake()
+	//Used for creting snake in the middle of screen
+	Snake(Direction direction)
 	{
-		currentDirection = Direction::RIGHT;
+		currentDirection = direction;
+		SnakeSegment* head = new SnakeSegment();
+		Segments.push_back(head);
+		head->positionX = Game::cellsInRow / 2;
+		head->positionY = Game::cellsInColumn / 2;
+	}
+
+	//Used for creating snake after transition
+	Snake(Direction direction, int position)
+	{
+		currentDirection = direction;
+		SnakeSegment* head = new SnakeSegment();
+		Segments.push_back(head);
+		if (currentDirection == Direction::LEFT) {
+			head->positionX = Game::cellsInRow;
+			head->positionY = position;
+		}
+		else if (currentDirection == Direction::RIGHT)
+		{
+			head->positionX = 0;
+			head->positionY = position;
+		}
+		if (currentDirection == Direction::UP) {
+			head->positionX = position;
+			head->positionY = Game::cellsInColumn;
+		}
+		else if (currentDirection == Direction::DOWN)
+		{
+			head->positionX = position;
+			head->positionY = 0;
+		}
 	}
 
 	~Snake()
@@ -90,6 +136,26 @@ public:
 			abs(directionChangeY[direction]) + abs(directionChangeY[currentDirection]) < 2)
 		{
 			currentDirection = direction;
+		}
+	}
+
+	void TransitionToSecondWindowIfNeeded()
+	{
+		if (segmentsToGrow < 0 || Segments.size() == 0)
+		{
+			//not moving, already transitioning or dying
+			return;
+		}
+		SnakeSegment* head = Segments.front();
+		if (head->positionX > Game::cellsInRow || head->positionX < 0)
+		{
+			PostMessage(hwndOtherWindow, windowMessageSnakeTransaction, (WPARAM)currentDirection, (LPARAM)head->positionY);
+			this->segmentsToGrow = -(int)Segments.size();
+		}
+		else if (head->positionY > Game::cellsInColumn || head->positionY < 0)
+		{
+			PostMessage(hwndOtherWindow, windowMessageSnakeTransaction, (WPARAM)currentDirection, (LPARAM)head->positionX);
+			this->segmentsToGrow = -(int)Segments.size();
 		}
 	}
 private:
@@ -139,35 +205,31 @@ void MoveSnakes(HDC* hdc)
 {
 	for (int i = Snakes.size() - 1; i >= 0; --i)
 	{
-		if (rand() % 100 < 30)
+		if (rand() % 100 < Game::directionChangeChangePercent)
 		{
 			Snakes[i]->TryChangeDirection((Direction)(rand() % 4));
 		}
 		Snakes[i]->Move(hdc);
+		Snakes[i]->TransitionToSecondWindowIfNeeded();
+		if (Snakes[i]->Segments.size() == 0)
+		{
+			delete Snakes[i];
+			Snakes.erase(Snakes.begin() + i);
+		}
 	}
 }
 
 void InitializeSnakes()
 {
-	Snake* snake = new Snake();
-	SnakeSegment* head = new SnakeSegment();
-	head->positionX = 20;
-	head->positionY = 20;
-	snake->Segments.push_back(head);
-	Snakes.push_back(snake);
+	Direction direction = (Direction)(rand() % 4);
+	Snakes.push_back(new Snake(direction));
 }
 
-
-int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
+HWND InitializeWindow(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
 {
-	srand(time(NULL));
-	InitializeSnakes();
-
 	static char szAppName[] = "Gniazdo ¿mij";
-	static const int windowSize = 400;
 	WNDCLASS wndClass;
 	HWND hwnd;
-	MSG msg;
 	const WORD ID_TIMER = 1;
 	wndClass.style = 0;
 	wndClass.lpfnWndProc = (WNDPROC)WndProc;
@@ -184,8 +246,10 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	hwnd = CreateWindow(szAppName,
 		szAppName,
 		WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, CW_USEDEFAULT,
-		windowSize, windowSize,
+		CW_USEDEFAULT, 
+		CW_USEDEFAULT,
+		Game::cellWidth * Game::cellsInRow, 
+		Game::cellHeight * Game::cellsInColumn,
 		HWND_DESKTOP,
 		NULL,
 		hinstance,
@@ -193,9 +257,19 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
+	SetTimer(hwnd, ID_TIMER, Game::frameTimeMlsc, NULL);
 
-	SetTimer(hwnd, ID_TIMER, 50, NULL);
+	return hwnd;
+}
 
+
+int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
+{
+	srand(time(NULL));
+	HWND hwnd = InitializeWindow(hinstance, hPrevInstance, lpszCmdLine, nCmdShow);
+	PostMessage(HWND_BROADCAST, windowMessageHello, (WPARAM)hwnd, NULL);
+	
+	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
 		TranslateMessage(&msg);
@@ -206,21 +280,40 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	if (message == windowMessageHello && (WPARAM)hwnd != wParam) 
+	{
+		hwndOtherWindow = (HWND)wParam;
+		PostMessage(hwndOtherWindow, windowMessageHelloReply, (WPARAM)hwnd, NULL);
+		return 0;
+	}
+	if (message == windowMessageHelloReply)
+	{
+		hwndOtherWindow = (HWND)wParam;
+		InitializeSnakes();
+		return 0;
+	}
+	if (message == windowMessageSnakeTransaction)
+	{
+		Direction direction = (Direction)wParam;
+		int position = (int)lParam;
+		Snakes.push_back(new Snake(direction, position));
+	}
+	
 	PAINTSTRUCT ps;
 	HDC hdc;
 	switch (message)
 	{
-	case WM_CREATE:
-	case WM_PAINT:
-		hdc = BeginPaint(hwnd, &ps);
-		DrawSnakes(&hdc);
-		EndPaint(hwnd, &ps);
-		return 0;
 	case WM_TIMER:
 		hdc = GetDC(hwnd);
 		MoveSnakes(&hdc);
 		ReleaseDC(hwnd, hdc);
 		break;
+	case WM_PAINT:
+	case WM_CREATE:
+		hdc = BeginPaint(hwnd, &ps);
+		DrawSnakes(&hdc);
+		EndPaint(hwnd, &ps);
+		return 0;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
