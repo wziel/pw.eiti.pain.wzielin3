@@ -191,6 +191,33 @@ private:
 	}
 };
 
+class SnakeTransitionInformation
+{
+public:
+	//od 17, d³ugoœæ 14 bit
+	int segmentsCount;
+	//od 3, d³ugoœæ 14 bit
+	int position;
+	//od 2, d³ugoœæ 1 bit
+	bool isSteerable;
+	//od 0, d³ugoœæ 2 bit
+	Direction direction;
+
+	SnakeTransitionInformation(int toParse)
+	{
+		direction = (Direction)(toParse & 0x00000003);
+		//isSterrable = (bool)((toParse >> 2) & 
+	}
+
+	int ParseToInt()
+	{
+		return (int)direction |
+			(((int)isSteerable) << 2) |
+			(position << 3) |
+			(segmentsCount << 17);
+	}
+};
+
 std::vector<Snake*> Snakes;
 
 void DrawSnakes(HDC* hdc)
@@ -297,6 +324,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Direction direction = (Direction)wParam;
 		int position = (int)lParam;
 		Snakes.push_back(new Snake(direction, position));
+		return 0;
 	}
 	
 	PAINTSTRUCT ps;
