@@ -3,6 +3,7 @@
 #include<vector>
 #include<time.h>
 LONG WINAPI WndProc(HWND, UINT, WPARAM, LPARAM);
+class Snake;
 
 enum Direction { LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3 };
 int directionChangeX[4] = { -1,1,0,0 };
@@ -12,8 +13,10 @@ HWND hwndOtherWindow;
 int windowMessageHello = RegisterWindowMessage("Pw.Eiti.Pain.Wzielin3.Lab1.Hello");
 //hwnd okna przekazywany w wParam
 int windowMessageHelloReply = RegisterWindowMessage("Pw.Eiti.Pain.Wzielin3.Lab1.HelloReply");
-//kierunek wê¿a przekazywany w wParam, poziom na krawêdzi przekazywany w lParam
+//w wParam przekazywany stan wê¿a jako int. do obliczenia wykorzystywana klasa pomocnicza SnakeTransactionInformation
 int windowMessageSnakeTransaction = RegisterWindowMessage("Pw.Eiti.Pain.Wzielin3.Lab1.SnakeTransaction");
+std::vector<Snake*> Snakes;
+Snake* mainSnake;
 
 class Game
 {
@@ -24,6 +27,38 @@ public:
 	static const int cellsInRow = 40;
 	static const int frameTimeMlsc = 50;
 	static const int directionChangeChangePercent = 10;
+};
+
+//Klasa do przekazywania wê¿a miêdzy oknami poprzez int
+class SnakeTransitionInformation
+{
+public:
+	//od 12, d³ugoœæ 8 bit
+	int segmentsCount;
+	//od 4, d³ugoœæ 8 bit
+	int position;
+	//od 3, d³ugoœæ 1 bit
+	bool isSteerable;
+	//od 0, d³ugoœæ 3 bit
+	Direction direction;
+
+	SnakeTransitionInformation() {}
+
+	SnakeTransitionInformation(int toParse)
+	{
+		direction = (Direction)(toParse & 0x00000003);
+		isSteerable = (bool)((toParse >> 3) & 0x00000001);
+		position = (toParse >> 4) & 0x000000FF;
+		segmentsCount = (toParse >> 12) & 0x000000FF;
+	}
+
+	int ParseToInt()
+	{
+		return (int)direction |
+			(((int)isSteerable) << 3) |
+			(position << 4) |
+			(segmentsCount << 12);
+	}
 };
 
 class SnakeSegment
@@ -62,21 +97,23 @@ class Snake
 public:
 	std::deque<SnakeSegment*> Segments;
 	Direction currentDirection;
-	int segmentsToGrow = 5;
+	int segmentsToGrow;
 
 	//Used for creting snake in the middle of screen
-	Snake(Direction direction)
+	Snake(Direction direction, int length)
 	{
 		currentDirection = direction;
 		SnakeSegment* head = new SnakeSegment();
 		Segments.push_back(head);
 		head->positionX = Game::cellsInRow / 2;
 		head->positionY = Game::cellsInColumn / 2;
+		segmentsToGrow = length - 1;
 	}
 
 	//Used for creating snake after transition
-	Snake(Direction direction, int position)
+	Snake(Direction direction, int position, int length)
 	{
+		segmentsToGrow = length - 1;
 		currentDirection = direction;
 		SnakeSegment* head = new SnakeSegment();
 		Segments.push_back(head);
@@ -147,16 +184,24 @@ public:
 			return;
 		}
 		SnakeSegment* head = Segments.front();
+		SnakeTransitionInformation transactionInfo;
 		if (head->positionX > Game::cellsInRow || head->positionX < 0)
 		{
-			PostMessage(hwndOtherWindow, windowMessageSnakeTransaction, (WPARAM)currentDirection, (LPARAM)head->positionY);
-			this->segmentsToGrow = -(int)Segments.size();
+			transactionInfo.position = head->positionY;
 		}
 		else if (head->positionY > Game::cellsInColumn || head->positionY < 0)
 		{
-			PostMessage(hwndOtherWindow, windowMessageSnakeTransaction, (WPARAM)currentDirection, (LPARAM)head->positionX);
-			this->segmentsToGrow = -(int)Segments.size();
+			transactionInfo.position = head->positionY;
 		}
+		else
+		{
+			return;
+		}
+		transactionInfo.direction = currentDirection;
+		transactionInfo.isSteerable = (this == mainSnake);
+		transactionInfo.segmentsCount = Segments.size();
+		PostMessage(hwndOtherWindow, windowMessageSnakeTransaction, (WPARAM)transactionInfo.ParseToInt(), NULL);
+		this->segmentsToGrow = -(int)Segments.size();
 	}
 private:
 	void TryShortenSnake(HDC* hdc)
@@ -191,35 +236,6 @@ private:
 	}
 };
 
-class SnakeTransitionInformation
-{
-public:
-	//od 17, d³ugoœæ 14 bit
-	int segmentsCount;
-	//od 3, d³ugoœæ 14 bit
-	int position;
-	//od 2, d³ugoœæ 1 bit
-	bool isSteerable;
-	//od 0, d³ugoœæ 2 bit
-	Direction direction;
-
-	SnakeTransitionInformation(int toParse)
-	{
-		direction = (Direction)(toParse & 0x00000003);
-		//isSterrable = (bool)((toParse >> 2) & 
-	}
-
-	int ParseToInt()
-	{
-		return (int)direction |
-			(((int)isSteerable) << 2) |
-			(position << 3) |
-			(segmentsCount << 17);
-	}
-};
-
-std::vector<Snake*> Snakes;
-
 void DrawSnakes(HDC* hdc)
 {
 	for (int i = Snakes.size() - 1; i >= 0; --i)
@@ -249,7 +265,8 @@ void MoveSnakes(HDC* hdc)
 void InitializeSnakes()
 {
 	Direction direction = (Direction)(rand() % 4);
-	Snakes.push_back(new Snake(direction));
+	mainSnake = new Snake(direction, 10);
+	Snakes.push_back(mainSnake);
 }
 
 HWND InitializeWindow(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
@@ -321,9 +338,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	if (message == windowMessageSnakeTransaction)
 	{
-		Direction direction = (Direction)wParam;
-		int position = (int)lParam;
-		Snakes.push_back(new Snake(direction, position));
+		SnakeTransitionInformation s(wParam);
+		Snake* snake = new Snake(s.direction, s.position, s.segmentsCount);
+		if (s.isSteerable)
+		{
+			mainSnake = snake;
+		}
+		Snakes.push_back(snake);
 		return 0;
 	}
 	
