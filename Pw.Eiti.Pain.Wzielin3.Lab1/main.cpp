@@ -1,6 +1,7 @@
 #include<Windows.h>
 #include<deque>
 #include<vector>
+#include<time.h>
 LONG WINAPI WndProc(HWND, UINT, WPARAM, LPARAM);
 
 enum Direction { LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3 };
@@ -23,17 +24,19 @@ public:
 		HBRUSH hBrush;
 		if (visible)
 		{
-			hPen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
-			hBrush = CreateSolidBrush(RGB(255, 0, 0));
+			hPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
+			hBrush = CreateSolidBrush(RGB(0, 0, 255));
 		}
 		else
 		{
-			hPen = CreatePen(PS_SOLID, 1, RGB(10, 20, 30));
-			hBrush = CreateSolidBrush(RGB(10, 20, 30));
+			hPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+			hBrush = CreateSolidBrush(RGB(0, 0, 0));
 		}
 		SelectObject(*hdc, hPen);
 		SelectObject(*hdc, hBrush);
-		Rectangle(*hdc, positionX, positionY, positionX + width, positionY + height);
+		int xPx = positionX * SnakeSegment::width;
+		int yPx = positionY * SnakeSegment::height;
+		Rectangle(*hdc, xPx, yPx, xPx + width, yPx + height);
 		DeleteObject(hPen);
 		DeleteObject(hBrush);
 	}
@@ -44,6 +47,7 @@ class Snake
 public:
 	std::deque<SnakeSegment*> Segments;
 	Direction currentDirection;
+	int segmentsToGrow = 5;
 
 	Snake()
 	{
@@ -59,26 +63,65 @@ public:
 		}
 	}
 
-	void Move(HDC* hdc, Direction direction)
-	{
-		Segments[Segments.size() - 1]->Draw(hdc, false);
-
-		SnakeSegment head = *Segments.front();
-
-		delete Segments[Segments.size() - 1];
-		Segments.pop_back();
-
-		SnakeSegment* segment = new SnakeSegment();
-		segment->positionX = (head.positionX + directionChangeX[direction]) * SnakeSegment::width;
-		segment->positionY = (head.positionY * directionChangeY[direction]) * SnakeSegment::height;
-		Segments.push_front(segment);
-
-		Segments[0]->Draw(hdc, true);
-	}
-
 	void Draw(HDC* hdc)
 	{
-		throw;
+		std::deque<SnakeSegment*>::iterator it = Segments.begin();
+
+		while (it != Segments.end())
+		{
+			(*it)->Draw(hdc, true);
+			it++;
+		}
+	}
+
+	void Move(HDC* hdc)
+	{
+		if (Segments.size() > 0)
+		{
+			TryShortenSnake(hdc);
+			TryExtendSnake(hdc);
+		}
+	}
+
+	void TryChangeDirection(Direction direction)
+	{
+		if (direction != currentDirection &&
+			abs(directionChangeX[direction]) + abs(directionChangeX[currentDirection]) < 2 &&
+			abs(directionChangeY[direction]) + abs(directionChangeY[currentDirection]) < 2)
+		{
+			currentDirection = direction;
+		}
+	}
+private:
+	void TryShortenSnake(HDC* hdc)
+	{
+		if (segmentsToGrow <= 0)
+		{
+			Segments[Segments.size() - 1]->Draw(hdc, false);
+			delete Segments[Segments.size() - 1];
+			Segments.pop_back();
+		}
+		else
+		{
+			segmentsToGrow--;
+		}
+	}
+
+	void TryExtendSnake(HDC* hdc)
+	{
+		if (segmentsToGrow >= 0)
+		{
+			SnakeSegment head = *Segments.front();
+			SnakeSegment* segment = new SnakeSegment();
+			segment->positionX = head.positionX + directionChangeX[currentDirection];
+			segment->positionY = head.positionY + directionChangeY[currentDirection];
+			Segments.push_front(segment);
+			Segments[0]->Draw(hdc, true);
+		}
+		else
+		{
+			segmentsToGrow++;
+		}
 	}
 };
 
@@ -86,22 +129,48 @@ std::vector<Snake*> Snakes;
 
 void DrawSnakes(HDC* hdc)
 {
-	for (int i = Snakes.size() - 1; i >= 0; ++i)
+	for (int i = Snakes.size() - 1; i >= 0; --i)
 	{
 		Snakes[i]->Draw(hdc);
 	}
 }
 
+void MoveSnakes(HDC* hdc)
+{
+	for (int i = Snakes.size() - 1; i >= 0; --i)
+	{
+		if (rand() % 100 < 30)
+		{
+			Snakes[i]->TryChangeDirection((Direction)(rand() % 4));
+		}
+		Snakes[i]->Move(hdc);
+	}
+}
+
+void InitializeSnakes()
+{
+	Snake* snake = new Snake();
+	SnakeSegment* head = new SnakeSegment();
+	head->positionX = 20;
+	head->positionY = 20;
+	snake->Segments.push_back(head);
+	Snakes.push_back(snake);
+}
+
 
 int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
 {
+	srand(time(NULL));
+	InitializeSnakes();
+
 	static char szAppName[] = "Gniazdo ¿mij";
 	static const int windowSize = 400;
 	WNDCLASS wndClass;
 	HWND hwnd;
 	MSG msg;
+	const WORD ID_TIMER = 1;
 	wndClass.style = 0;
-	wndClass.lpfnWndProc = (WNDPROC)WndProc; //adres procedury obs³ugi zdarzeñ
+	wndClass.lpfnWndProc = (WNDPROC)WndProc;
 	wndClass.cbClsExtra = 0;
 	wndClass.cbWndExtra = 0;
 	wndClass.hInstance = hinstance;
@@ -121,15 +190,11 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 		NULL,
 		hinstance,
 		NULL);
+
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
 
-	Snake* snake = new Snake();
-	SnakeSegment* head = new SnakeSegment();
-	head->positionX = 20;
-	head->positionY = 20;
-	snake->Segments.push_back(head);
-	Snakes.push_back(snake);
+	SetTimer(hwnd, ID_TIMER, 50, NULL);
 
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
@@ -143,16 +208,19 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
 	HDC hdc;
-	RECT rect;
 	switch (message)
 	{
 	case WM_CREATE:
 	case WM_PAINT:
 		hdc = BeginPaint(hwnd, &ps);
-		GetClientRect(hwnd, &rect);
-		MoveGame
+		DrawSnakes(&hdc);
 		EndPaint(hwnd, &ps);
 		return 0;
+	case WM_TIMER:
+		hdc = GetDC(hwnd);
+		MoveSnakes(&hdc);
+		ReleaseDC(hwnd, hdc);
+		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
