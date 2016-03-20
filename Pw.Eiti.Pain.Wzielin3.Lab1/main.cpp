@@ -98,9 +98,9 @@ public:
 		}
 		SelectObject(*hdc, hPen);
 		SelectObject(*hdc, hBrush);
-		int xPx = positionX * Game::cellWidth;
-		int yPx = positionY * Game::cellHeight;
-		Rectangle(*hdc, xPx, yPx, xPx + Game::cellWidth, yPx + Game::cellHeight);
+		int x = positionX * Game::cellWidth;
+		int y = positionY * Game::cellHeight;
+		Rectangle(*hdc, x, y, x + Game::cellWidth, y + Game::cellHeight);
 		DeleteObject(hPen);
 		DeleteObject(hBrush);
 	}
@@ -202,12 +202,12 @@ public:
 		}
 		SnakeSegment* head = Segments.front();
 		SnakeTransitionInformation transactionInfo;
-		if ((head->positionX == Game::cellsInRow - 1 && currentDirection == Direction::RIGHT) || 
+		if ((head->positionX == Game::cellsInRow - 1 && currentDirection == Direction::RIGHT) ||
 			(head->positionX == 0 && currentDirection == Direction::LEFT))
 		{
 			transactionInfo.position = head->positionY;
 		}
-		else if ((head->positionY == Game::cellsInColumn - 1 && currentDirection == Direction::DOWN) || 
+		else if ((head->positionY == Game::cellsInColumn - 1 && currentDirection == Direction::DOWN) ||
 			(head->positionY == 0 && currentDirection == Direction::UP))
 		{
 			transactionInfo.position = head->positionX;
@@ -430,12 +430,19 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 	}
 
+	RECT rc;
 	PAINTSTRUCT ps;
 	HDC hdc;
 	switch (message)
 	{
 	case WM_TIMER:
 		hdc = GetDC(hwnd);
+		GetClientRect(hwnd, &rc);
+		SetMapMode(hdc, MM_ISOTROPIC);
+		SetWindowExtEx(hdc,
+			Game::cellsInRow * Game::cellWidth,
+			Game::cellsInColumn * Game::cellHeight, NULL);
+		SetViewportExtEx(hdc, rc.right, rc.bottom, NULL);
 		MoveSnakes(&hdc);
 		ReleaseDC(hwnd, hdc);
 		break;
@@ -445,6 +452,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 	case WM_CREATE:
 		hdc = BeginPaint(hwnd, &ps);
+		GetClientRect(hwnd, &rc);
+		SetMapMode(hdc, MM_ISOTROPIC);
+		SetWindowExtEx(hdc,
+			Game::cellsInRow * Game::cellWidth,
+			Game::cellsInColumn * Game::cellHeight, NULL);
+		SetViewportExtEx(hdc, rc.right, rc.bottom, NULL);
 		DrawSnakes(&hdc);
 		EndPaint(hwnd, &ps);
 		return 0;
