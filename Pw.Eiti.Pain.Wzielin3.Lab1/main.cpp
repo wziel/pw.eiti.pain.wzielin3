@@ -23,23 +23,27 @@ class Game
 public:
 	static const int cellWidth = 10;
 	static const int cellHeight = 10;
-	static const int cellsInColumn = 40;
-	static const int cellsInRow = 40;
+	static const int cellsInColumn = 80;
+	static const int cellsInRow = 80;
 	static const int frameTimeMlsc = 50;
 	static const int directionChangeChangePercent = 10;
+	static const int mainSnakeColor = RGB(0, 0, 255);
+	static const int otherSnakesColor = RGB(0, 255, 0);
+	static const int windowColor = RGB(0, 0, 0);
+	static const int otherSnakesCount = 10;
 };
 
 //Klasa do przekazywania wê¿a miêdzy oknami poprzez int
 class SnakeTransitionInformation
 {
 public:
-	//od 12, d³ugoœæ 8 bit
+	//od 11, d³ugoœæ 8 bit
 	int segmentsCount;
-	//od 4, d³ugoœæ 8 bit
+	//od 3, d³ugoœæ 8 bit
 	int position;
-	//od 3, d³ugoœæ 1 bit
+	//od 2, d³ugoœæ 1 bit
 	bool isSteerable;
-	//od 0, d³ugoœæ 3 bit
+	//od 0, d³ugoœæ 2 bit
 	Direction direction;
 
 	SnakeTransitionInformation() {}
@@ -47,17 +51,17 @@ public:
 	SnakeTransitionInformation(int toParse)
 	{
 		direction = (Direction)(toParse & 0x00000003);
-		isSteerable = (bool)((toParse >> 3) & 0x00000001);
-		position = (toParse >> 4) & 0x000000FF;
-		segmentsCount = (toParse >> 12) & 0x000000FF;
+		isSteerable = (bool)((toParse >> 2) & 0x00000001);
+		position = (toParse >> 3) & 0x000000FF;
+		segmentsCount = (toParse >> 11) & 0x000000FF;
 	}
 
 	int ParseToInt()
 	{
 		return (int)direction |
-			(((int)isSteerable) << 3) |
-			(position << 4) |
-			(segmentsCount << 12);
+			(((int)isSteerable) << 2) |
+			(position << 3) |
+			(segmentsCount << 11);
 	}
 };
 
@@ -68,19 +72,25 @@ public:
 	int positionX;
 	int positionY;
 
+	SnakeSegment(bool isMainSnake)
+	{
+		backgroundColor = Game::windowColor;
+		snakeColor = isMainSnake ? Game::mainSnakeColor : Game::otherSnakesColor;
+	}
+
 	void Draw(HDC* hdc, bool visible)
 	{
 		HPEN hPen;
 		HBRUSH hBrush;
 		if (visible)
 		{
-			hPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
-			hBrush = CreateSolidBrush(RGB(0, 0, 255));
+			hPen = CreatePen(PS_SOLID, 1, snakeColor);
+			hBrush = CreateSolidBrush(snakeColor);
 		}
 		else
 		{
-			hPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
-			hBrush = CreateSolidBrush(RGB(0, 0, 0));
+			hPen = CreatePen(PS_SOLID, 1, backgroundColor);
+			hBrush = CreateSolidBrush(backgroundColor);
 		}
 		SelectObject(*hdc, hPen);
 		SelectObject(*hdc, hBrush);
@@ -90,6 +100,9 @@ public:
 		DeleteObject(hPen);
 		DeleteObject(hBrush);
 	}
+private:
+	int snakeColor;
+	int backgroundColor;
 };
 
 class Snake
@@ -100,10 +113,10 @@ public:
 	int segmentsToGrow;
 
 	//Used for creting snake in the middle of screen
-	Snake(Direction direction, int length)
+	Snake(Direction direction, int length, bool isMainSnake)
+		: currentDirection(direction), isMainSnake(isMainSnake), segmentsToGrow(length - 1)
 	{
-		currentDirection = direction;
-		SnakeSegment* head = new SnakeSegment();
+		SnakeSegment* head = new SnakeSegment(isMainSnake);
 		Segments.push_back(head);
 		head->positionX = Game::cellsInRow / 2;
 		head->positionY = Game::cellsInColumn / 2;
@@ -111,11 +124,10 @@ public:
 	}
 
 	//Used for creating snake after transition
-	Snake(Direction direction, int position, int length)
+	Snake(Direction direction, int position, int length, bool isMainSnake)
+		: currentDirection(direction), isMainSnake(isMainSnake), segmentsToGrow(length - 1)
 	{
-		segmentsToGrow = length - 1;
-		currentDirection = direction;
-		SnakeSegment* head = new SnakeSegment();
+		SnakeSegment* head = new SnakeSegment(isMainSnake);
 		Segments.push_back(head);
 		if (currentDirection == Direction::LEFT) {
 			head->positionX = Game::cellsInRow;
@@ -164,6 +176,7 @@ public:
 			TryShortenSnake(hdc);
 			TryExtendSnake(hdc);
 		}
+		Draw(hdc);
 	}
 
 	void TryChangeDirection(Direction direction)
@@ -191,7 +204,7 @@ public:
 		}
 		else if (head->positionY > Game::cellsInColumn || head->positionY < 0)
 		{
-			transactionInfo.position = head->positionY;
+			transactionInfo.position = head->positionX;
 		}
 		else
 		{
@@ -199,11 +212,13 @@ public:
 		}
 		transactionInfo.direction = currentDirection;
 		transactionInfo.isSteerable = (this == mainSnake);
-		transactionInfo.segmentsCount = Segments.size();
+		transactionInfo.segmentsCount = Segments.size() + segmentsToGrow;
 		PostMessage(hwndOtherWindow, windowMessageSnakeTransaction, (WPARAM)transactionInfo.ParseToInt(), NULL);
 		this->segmentsToGrow = -(int)Segments.size();
 	}
 private:
+	bool isMainSnake;
+
 	void TryShortenSnake(HDC* hdc)
 	{
 		if (segmentsToGrow <= 0)
@@ -223,7 +238,7 @@ private:
 		if (segmentsToGrow >= 0)
 		{
 			SnakeSegment head = *Segments.front();
-			SnakeSegment* segment = new SnakeSegment();
+			SnakeSegment* segment = new SnakeSegment(isMainSnake);
 			segment->positionX = head.positionX + directionChangeX[currentDirection];
 			segment->positionY = head.positionY + directionChangeY[currentDirection];
 			Segments.push_front(segment);
@@ -248,25 +263,36 @@ void MoveSnakes(HDC* hdc)
 {
 	for (int i = Snakes.size() - 1; i >= 0; --i)
 	{
-		if (rand() % 100 < Game::directionChangeChangePercent)
+		Snake* snake = Snakes[i];
+		if (snake != mainSnake && rand() % 100 < Game::directionChangeChangePercent)
 		{
-			Snakes[i]->TryChangeDirection((Direction)(rand() % 4));
+			snake->TryChangeDirection((Direction)(rand() % 4));
 		}
-		Snakes[i]->Move(hdc);
-		Snakes[i]->TransitionToSecondWindowIfNeeded();
-		if (Snakes[i]->Segments.size() == 0)
+		snake->Move(hdc);
+		snake->TransitionToSecondWindowIfNeeded();
+		if (snake->Segments.size() == 0)
 		{
-			delete Snakes[i];
+			delete snake;
 			Snakes.erase(Snakes.begin() + i);
 		}
 	}
 }
 
-void InitializeSnakes()
+void InitializeMainSnake()
 {
 	Direction direction = (Direction)(rand() % 4);
-	mainSnake = new Snake(direction, 10);
+	mainSnake = new Snake(direction, 10, true);
 	Snakes.push_back(mainSnake);
+}
+
+void InitializeOtherSnakes()
+{
+	for (int i = Game::otherSnakesCount; i > 0; --i)
+	{
+		Direction direction = (Direction)(rand() % 4);
+		Snake* snake = new Snake(direction, 10, false);
+		Snakes.push_back(snake);
+	}
 }
 
 HWND InitializeWindow(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
@@ -290,9 +316,9 @@ HWND InitializeWindow(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCm
 	hwnd = CreateWindow(szAppName,
 		szAppName,
 		WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, 
 		CW_USEDEFAULT,
-		Game::cellWidth * Game::cellsInRow, 
+		CW_USEDEFAULT,
+		Game::cellWidth * Game::cellsInRow,
 		Game::cellHeight * Game::cellsInColumn,
 		HWND_DESKTOP,
 		NULL,
@@ -312,7 +338,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	srand(time(NULL));
 	HWND hwnd = InitializeWindow(hinstance, hPrevInstance, lpszCmdLine, nCmdShow);
 	PostMessage(HWND_BROADCAST, windowMessageHello, (WPARAM)hwnd, NULL);
-	
+
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
@@ -324,22 +350,23 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	if (message == windowMessageHello && (WPARAM)hwnd != wParam) 
+	if (message == windowMessageHello && (WPARAM)hwnd != wParam)
 	{
 		hwndOtherWindow = (HWND)wParam;
 		PostMessage(hwndOtherWindow, windowMessageHelloReply, (WPARAM)hwnd, NULL);
+		InitializeOtherSnakes();
 		return 0;
 	}
 	if (message == windowMessageHelloReply)
 	{
 		hwndOtherWindow = (HWND)wParam;
-		InitializeSnakes();
+		InitializeMainSnake();
 		return 0;
 	}
 	if (message == windowMessageSnakeTransaction)
 	{
 		SnakeTransitionInformation s(wParam);
-		Snake* snake = new Snake(s.direction, s.position, s.segmentsCount);
+		Snake* snake = new Snake(s.direction, s.position, s.segmentsCount, s.isSteerable);
 		if (s.isSteerable)
 		{
 			mainSnake = snake;
@@ -347,7 +374,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Snakes.push_back(snake);
 		return 0;
 	}
-	
+
 	PAINTSTRUCT ps;
 	HDC hdc;
 	switch (message)
