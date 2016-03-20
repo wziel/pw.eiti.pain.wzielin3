@@ -31,6 +31,28 @@ public:
 	static const int otherSnakesColor = RGB(0, 255, 0);
 	static const int windowColor = RGB(0, 0, 0);
 	static const int otherSnakesCount = 10;
+
+	//szachownica gry wskazuj¹ca na wê¿a który znajduje siê na danym polu
+	static Snake* GameBoard[cellsInColumn][cellsInRow];
+
+	static void TakeOverCell(int x, int y, Snake* snake)
+	{
+		Snake* current = GameBoard[x][y];
+		if (current != NULL && current != snake)
+		{
+			current->Kill();
+		}
+		GameBoard[x][y] = snake;
+	}
+
+	static void ReleaseCell(int x, int y, Snake* snake)
+	{
+		Snake* current = GameBoard[x][y];
+		if (current != NULL && current == snake)
+		{
+			GameBoard[x][y] = NULL;
+		}
+	}
 };
 
 //Klasa do przekazywania wê¿a miêdzy oknami poprzez int
@@ -234,7 +256,9 @@ private:
 	{
 		if (segmentsToGrow <= 0)
 		{
-			Segments[Segments.size() - 1]->Draw(hdc, false);
+			SnakeSegment* segment = Segments[Segments.size() - 1];
+			Game::ReleaseCell(segment->positionX, segment->positionY, this);
+			segment->Draw(hdc, false);
 			delete Segments[Segments.size() - 1];
 			Segments.pop_back();
 		}
@@ -252,7 +276,9 @@ private:
 			SnakeSegment* segment = new SnakeSegment(isMainSnake);
 			segment->positionX = head.positionX + directionChangeX[currentDirection];
 			segment->positionY = head.positionY + directionChangeY[currentDirection];
+			Game::TakeOverCell(segment->positionX, segment->positionY, this);
 			Segments.push_front(segment);
+			head = segment;
 			Segments[0]->Draw(hdc, true);
 		}
 		else
