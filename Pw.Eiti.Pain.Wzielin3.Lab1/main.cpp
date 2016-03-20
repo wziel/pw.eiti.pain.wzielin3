@@ -212,10 +212,21 @@ public:
 		}
 		transactionInfo.direction = currentDirection;
 		transactionInfo.isSteerable = (this == mainSnake);
+		if (transactionInfo.isSteerable)
+		{
+			mainSnake = NULL;
+			BringWindowToTop(hwndOtherWindow);
+		}
 		transactionInfo.segmentsCount = Segments.size() + segmentsToGrow;
 		PostMessage(hwndOtherWindow, windowMessageSnakeTransaction, (WPARAM)transactionInfo.ParseToInt(), NULL);
-		this->segmentsToGrow = -(int)Segments.size();
+		Kill();
 	}
+
+	void Kill()
+	{
+		segmentsToGrow = -(int)Segments.size();
+	}
+
 private:
 	bool isMainSnake;
 
@@ -295,6 +306,15 @@ void InitializeOtherSnakes()
 	}
 }
 
+void HandleKeyDown(int virtualKeyCode)
+{
+	if (mainSnake == NULL) return;
+	if (virtualKeyCode == VK_LEFT) mainSnake->TryChangeDirection(Direction::LEFT);
+	if (virtualKeyCode == VK_RIGHT) mainSnake->TryChangeDirection(Direction::RIGHT);
+	if (virtualKeyCode == VK_UP) mainSnake->TryChangeDirection(Direction::UP);
+	if (virtualKeyCode == VK_DOWN) mainSnake->TryChangeDirection(Direction::DOWN);
+}
+
 HWND InitializeWindow(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
 {
 	static char szAppName[] = "Gniazdo ¿mij";
@@ -324,7 +344,7 @@ HWND InitializeWindow(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCm
 		NULL,
 		hinstance,
 		NULL);
-
+	
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
 	SetTimer(hwnd, ID_TIMER, Game::frameTimeMlsc, NULL);
@@ -384,6 +404,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		MoveSnakes(&hdc);
 		ReleaseDC(hwnd, hdc);
 		break;
+	case WM_KEYDOWN:
+		HandleKeyDown(wParam);
+		return 0;
 	case WM_PAINT:
 	case WM_CREATE:
 		hdc = BeginPaint(hwnd, &ps);
