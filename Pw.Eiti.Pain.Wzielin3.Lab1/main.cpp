@@ -30,30 +30,12 @@ public:
 	static const int mainSnakeColor = RGB(0, 0, 255);
 	static const int otherSnakesColor = RGB(0, 255, 0);
 	static const int windowColor = RGB(0, 0, 0);
-	static const int otherSnakesCount = 10;
+	static const int otherSnakesCount = 50;
+	static const int snakeLength = 5;
 
-	//szachownica gry wskazuj¹ca na wê¿a który znajduje siê na danym polu
-	static Snake* GameBoard[cellsInColumn][cellsInRow];
-
-	static void TakeOverCell(int x, int y, Snake* snake)
-	{
-		Snake* current = GameBoard[x][y];
-		if (current != NULL && current != snake)
-		{
-			current->Kill();
-		}
-		GameBoard[x][y] = snake;
-	}
-
-	static void ReleaseCell(int x, int y, Snake* snake)
-	{
-		Snake* current = GameBoard[x][y];
-		if (current != NULL && current == snake)
-		{
-			GameBoard[x][y] = NULL;
-		}
-	}
 };
+//szachownica gry wskazuj¹ca na wê¿a który znajduje siê na danym polu
+Snake* GameBoard[Game::cellsInColumn][Game::cellsInRow];
 
 //Klasa do przekazywania wê¿a miêdzy oknami poprzez int
 class SnakeTransitionInformation
@@ -140,8 +122,8 @@ public:
 	{
 		SnakeSegment* head = new SnakeSegment(isMainSnake);
 		Segments.push_back(head);
-		head->positionX = Game::cellsInRow / 2;
-		head->positionY = Game::cellsInColumn / 2;
+		head->positionX = rand() % Game::cellsInRow;
+		head->positionY = rand() % Game::cellsInColumn;
 		segmentsToGrow = length - 1;
 	}
 
@@ -152,7 +134,7 @@ public:
 		SnakeSegment* head = new SnakeSegment(isMainSnake);
 		Segments.push_back(head);
 		if (currentDirection == Direction::LEFT) {
-			head->positionX = Game::cellsInRow;
+			head->positionX = Game::cellsInRow - 1;
 			head->positionY = position;
 		}
 		else if (currentDirection == Direction::RIGHT)
@@ -162,7 +144,7 @@ public:
 		}
 		if (currentDirection == Direction::UP) {
 			head->positionX = position;
-			head->positionY = Game::cellsInColumn;
+			head->positionY = Game::cellsInColumn - 1;
 		}
 		else if (currentDirection == Direction::DOWN)
 		{
@@ -213,18 +195,20 @@ public:
 
 	void TransitionToSecondWindowIfNeeded()
 	{
-		if (segmentsToGrow < 0 || Segments.size() == 0)
+		if (segmentsToGrow < 0 || isDead)
 		{
 			//not moving, already transitioning or dying
 			return;
 		}
 		SnakeSegment* head = Segments.front();
 		SnakeTransitionInformation transactionInfo;
-		if (head->positionX > Game::cellsInRow || head->positionX < 0)
+		if ((head->positionX == Game::cellsInRow - 1 && currentDirection == Direction::RIGHT) || 
+			(head->positionX == 0 && currentDirection == Direction::LEFT))
 		{
 			transactionInfo.position = head->positionY;
 		}
-		else if (head->positionY > Game::cellsInColumn || head->positionY < 0)
+		else if ((head->positionY == Game::cellsInColumn - 1 && currentDirection == Direction::DOWN) || 
+			(head->positionY == 0 && currentDirection == Direction::UP))
 		{
 			transactionInfo.position = head->positionX;
 		}
@@ -244,8 +228,10 @@ public:
 		Kill();
 	}
 
+	bool isDead = false;
 	void Kill()
 	{
+		isDead = true;
 		segmentsToGrow = -(int)Segments.size();
 	}
 
@@ -257,7 +243,7 @@ private:
 		if (segmentsToGrow <= 0)
 		{
 			SnakeSegment* segment = Segments[Segments.size() - 1];
-			Game::ReleaseCell(segment->positionX, segment->positionY, this);
+			ReleaseCell(segment->positionX, segment->positionY);
 			segment->Draw(hdc, false);
 			delete Segments[Segments.size() - 1];
 			Segments.pop_back();
@@ -276,7 +262,7 @@ private:
 			SnakeSegment* segment = new SnakeSegment(isMainSnake);
 			segment->positionX = head.positionX + directionChangeX[currentDirection];
 			segment->positionY = head.positionY + directionChangeY[currentDirection];
-			Game::TakeOverCell(segment->positionX, segment->positionY, this);
+			TakeOverCell(segment->positionX, segment->positionY);
 			Segments.push_front(segment);
 			head = segment;
 			Segments[0]->Draw(hdc, true);
@@ -284,6 +270,25 @@ private:
 		else
 		{
 			segmentsToGrow++;
+		}
+	}
+
+	void TakeOverCell(int x, int y)
+	{
+		Snake* current = GameBoard[x][y];
+		if (current != NULL && current != this)
+		{
+			current->Kill();
+		}
+		GameBoard[x][y] = this;
+	}
+
+	void ReleaseCell(int x, int y)
+	{
+		Snake* current = GameBoard[x][y];
+		if (current != NULL && current == this)
+		{
+			GameBoard[x][y] = NULL;
 		}
 	}
 };
@@ -305,10 +310,14 @@ void MoveSnakes(HDC* hdc)
 		{
 			snake->TryChangeDirection((Direction)(rand() % 4));
 		}
-		snake->Move(hdc);
 		snake->TransitionToSecondWindowIfNeeded();
+		snake->Move(hdc);
 		if (snake->Segments.size() == 0)
 		{
+			if (snake == mainSnake)
+			{
+				mainSnake = NULL;
+			}
 			delete snake;
 			Snakes.erase(Snakes.begin() + i);
 		}
@@ -318,7 +327,7 @@ void MoveSnakes(HDC* hdc)
 void InitializeMainSnake()
 {
 	Direction direction = (Direction)(rand() % 4);
-	mainSnake = new Snake(direction, 10, true);
+	mainSnake = new Snake(direction, Game::snakeLength, true);
 	Snakes.push_back(mainSnake);
 }
 
@@ -327,7 +336,7 @@ void InitializeOtherSnakes()
 	for (int i = Game::otherSnakesCount; i > 0; --i)
 	{
 		Direction direction = (Direction)(rand() % 4);
-		Snake* snake = new Snake(direction, 10, false);
+		Snake* snake = new Snake(direction, Game::snakeLength, false);
 		Snakes.push_back(snake);
 	}
 }
@@ -370,7 +379,7 @@ HWND InitializeWindow(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCm
 		NULL,
 		hinstance,
 		NULL);
-	
+
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
 	SetTimer(hwnd, ID_TIMER, Game::frameTimeMlsc, NULL);
