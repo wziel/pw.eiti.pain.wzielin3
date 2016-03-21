@@ -289,6 +289,7 @@ private:
 		if (current != NULL && current != this)
 		{
 			current->Kill();
+			segmentsToGrow += Game::snakeLength;
 		}
 		GameBoard[x][y] = this;
 	}
