@@ -18,11 +18,21 @@ int windowMessageSnakeTransaction = RegisterWindowMessage("Pw.Eiti.Pain.Wzielin3
 std::vector<Snake*> Snakes;
 Snake* mainSnake;
 
+float GetPixelsPerMM_LOMETRIC()
+{
+	HDC screen = GetDC(NULL);
+	int hSize = GetDeviceCaps(screen, HORZSIZE);
+	int hRes = GetDeviceCaps(screen, HORZRES);
+	float PixelsPerMM = (float)hRes / hSize;   // pixels per millimeter
+	//return 1;
+	return PixelsPerMM / 10;
+}
+
 class Game
 {
 public:
-	static const int cellWidth = 10;
-	static const int cellHeight = 10;
+	static const int cellWidth = 20;
+	static const int cellHeight = 20;
 	static const int cellsInColumn = 80;
 	static const int cellsInRow = 80;
 	static const int frameTimeMlsc = 50;
@@ -99,7 +109,7 @@ public:
 		SelectObject(*hdc, hPen);
 		SelectObject(*hdc, hBrush);
 		int x = positionX * Game::cellWidth;
-		int y = positionY * Game::cellHeight;
+		int y = -positionY * Game::cellHeight;
 		Rectangle(*hdc, x, y, x + Game::cellWidth, y + Game::cellHeight);
 		DeleteObject(hPen);
 		DeleteObject(hBrush);
@@ -373,8 +383,8 @@ HWND InitializeWindow(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpszCm
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
-		Game::cellWidth * Game::cellsInRow,
-		Game::cellHeight * Game::cellsInColumn,
+		Game::cellWidth * Game::cellsInRow *GetPixelsPerMM_LOMETRIC(),
+	Game::cellHeight * Game::cellsInColumn *GetPixelsPerMM_LOMETRIC(),
 		HWND_DESKTOP,
 		NULL,
 		hinstance,
@@ -438,11 +448,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_TIMER:
 		hdc = GetDC(hwnd);
 		GetClientRect(hwnd, &rc);
-		SetMapMode(hdc, MM_ISOTROPIC);
-		SetWindowExtEx(hdc,
-			Game::cellsInRow * Game::cellWidth,
-			Game::cellsInColumn * Game::cellHeight, NULL);
-		SetViewportExtEx(hdc, rc.right, rc.bottom, NULL);
+		SetMapMode(hdc, MM_LOMETRIC);
 		MoveSnakes(&hdc);
 		ReleaseDC(hwnd, hdc);
 		break;
@@ -453,11 +459,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		hdc = BeginPaint(hwnd, &ps);
 		GetClientRect(hwnd, &rc);
-		SetMapMode(hdc, MM_ISOTROPIC);
-		SetWindowExtEx(hdc,
-			Game::cellsInRow * Game::cellWidth,
-			Game::cellsInColumn * Game::cellHeight, NULL);
-		SetViewportExtEx(hdc, rc.right, rc.bottom, NULL);
+		SetMapMode(hdc, MM_LOMETRIC);
 		DrawSnakes(&hdc);
 		EndPaint(hwnd, &ps);
 		return 0;
