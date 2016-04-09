@@ -41,16 +41,6 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
         {
         }
 
-        private void AddToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var model = new PointModel(ApplicationModel);
-            var form = new NewForm(model);
-            if (form.ShowDialog() == DialogResult.OK)
-            {
-                ApplicationModel.Add(model);
-            }
-        }
-
         private void EditToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var selected = GetSelectedModels();
@@ -73,6 +63,19 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
         protected virtual IReadOnlyCollection<PointModel> GetSelectedModels()
         {
             return new List<PointModel>();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if(ApplicationModel.FormsCount <= 1)
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                base.OnClosing(e);
+                ApplicationModel.FormsCount--;
+            }
         }
     }
 }

@@ -7,11 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing.Design;
 
 namespace Pw.Eiti.Pain.Wzielin3.Lab2
 {
     public partial class ColorControl : UserControl
     {
+        public event EventHandler ColorChanged;
+
         private ColorType colorType;
         private Color Color
         {
@@ -27,14 +30,24 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             { ColorType.Green, System.Drawing.Color.FromKnownColor(KnownColor.Green) },
             { ColorType.Blue, System.Drawing.Color.FromKnownColor(KnownColor.Blue) },
         };
-
+        
+        [Editor(typeof(ColorEditor), typeof(UITypeEditor))]
+        [Category("Point")]
+        [Browsable(true)]
         public ColorType ColorType
         {
             get { return colorType; }
             set
             {
-                colorType = value;
-                Invalidate();
+                if(colorType != value)
+                {
+                    colorType = value;
+                    Invalidate();
+                    if(ColorChanged != null)
+                    {
+                        ColorChanged.Invoke(this, null);
+                    }
+                }
             }
         }
 

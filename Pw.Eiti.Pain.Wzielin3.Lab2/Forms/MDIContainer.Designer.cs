@@ -32,6 +32,11 @@
             this.mDIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.layoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.formToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.listViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.treeViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -39,7 +44,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mDIToolStripMenuItem,
-            this.layoutToolStripMenuItem});
+            this.layoutToolStripMenuItem,
+            this.newToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.MdiWindowListItem = this.mDIToolStripMenuItem;
             this.menuStrip1.Name = "menuStrip1";
@@ -68,6 +74,45 @@
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
+            // newToolStripMenuItem
+            // 
+            this.newToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.formToolStripMenuItem,
+            this.pointToolStripMenuItem});
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.newToolStripMenuItem.Text = "New";
+            // 
+            // formToolStripMenuItem
+            // 
+            this.formToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.listViewToolStripMenuItem,
+            this.treeViewToolStripMenuItem});
+            this.formToolStripMenuItem.Name = "formToolStripMenuItem";
+            this.formToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.formToolStripMenuItem.Text = "Form";
+            // 
+            // listViewToolStripMenuItem
+            // 
+            this.listViewToolStripMenuItem.Name = "listViewToolStripMenuItem";
+            this.listViewToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.listViewToolStripMenuItem.Text = "List View";
+            this.listViewToolStripMenuItem.Click += new System.EventHandler(this.listViewToolStripMenuItem_Click);
+            // 
+            // treeViewToolStripMenuItem
+            // 
+            this.treeViewToolStripMenuItem.Name = "treeViewToolStripMenuItem";
+            this.treeViewToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.treeViewToolStripMenuItem.Text = "Tree View";
+            this.treeViewToolStripMenuItem.Click += new System.EventHandler(this.treeViewToolStripMenuItem_Click);
+            // 
+            // pointToolStripMenuItem
+            // 
+            this.pointToolStripMenuItem.Name = "pointToolStripMenuItem";
+            this.pointToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.pointToolStripMenuItem.Text = "Point";
+            this.pointToolStripMenuItem.Click += new System.EventHandler(this.pointToolStripMenuItem_Click);
+            // 
             // MDIContainer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -92,6 +137,11 @@
         private System.Windows.Forms.ToolStripMenuItem mDIToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem layoutToolStripMenuItem;
         private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem formToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem listViewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem treeViewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pointToolStripMenuItem;
     }
 }
 

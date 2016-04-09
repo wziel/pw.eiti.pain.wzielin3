@@ -24,18 +24,40 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            var form = new ListViewForm(Model);
-            form.MdiParent = this;
-            form.Show();
-
-            var form2 = new TreeViewForm(Model);
-            form2.MdiParent = this;
-            form2.Show();
+            AddNewForm(new ListViewForm(Model));
+            AddNewForm(new TreeViewForm(Model));
         }
 
         private void layoutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LayoutMdi(MdiLayout.TileVertical);
+        }
+
+        private void listViewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddNewForm(new ListViewForm(Model));
+        }
+
+        private void treeViewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddNewForm(new TreeViewForm(Model));
+        }
+
+        private void AddNewForm(Form f)
+        {
+            f.MdiParent = this;
+            f.Show();
+            Model.FormsCount++;
+        }
+
+        private void pointToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var point = new PointModel(Model);
+            var form = new NewForm(point);
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                Model.Add(point);
+            }
         }
     }
 }

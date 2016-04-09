@@ -12,6 +12,7 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
         private List<PointModel> points = new List<PointModel>();
 
         public IReadOnlyCollection<PointModel> Points { get { return points; } }
+        public int FormsCount { get; set; }
 
         public void Add(PointModel model)
         {

@@ -37,11 +37,11 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtLabel = new System.Windows.Forms.TextBox();
-            this.colorControl = new Pw.Eiti.Pain.Wzielin3.Lab2.ColorControl();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.colorControl = new Pw.Eiti.Pain.Wzielin3.Lab2.ColorControl();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
@@ -138,17 +138,6 @@
             this.txtLabel.TabIndex = 4;
             this.txtLabel.Validating += new System.ComponentModel.CancelEventHandler(this.txtLabel_Validating);
             // 
-            // colorControl
-            // 
-            this.colorControl.AutoSize = true;
-            this.colorControl.ColorType = ColorType.Red;
-            this.colorControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.colorControl.Location = new System.Drawing.Point(53, 63);
-            this.colorControl.MinimumSize = new System.Drawing.Size(100, 20);
-            this.colorControl.Name = "colorControl";
-            this.colorControl.Size = new System.Drawing.Size(248, 20);
-            this.colorControl.TabIndex = 7;
-            // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.CausesValidation = false;
@@ -194,6 +183,17 @@
             // errorProvider
             // 
             this.errorProvider.ContainerControl = this;
+            // 
+            // colorControl
+            // 
+            this.colorControl.AutoSize = true;
+            this.colorControl.ColorType = ColorType.Green;
+            this.colorControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorControl.Location = new System.Drawing.Point(53, 63);
+            this.colorControl.MinimumSize = new System.Drawing.Size(100, 20);
+            this.colorControl.Name = "colorControl";
+            this.colorControl.Size = new System.Drawing.Size(248, 20);
+            this.colorControl.TabIndex = 7;
             // 
             // NewForm
             // 
