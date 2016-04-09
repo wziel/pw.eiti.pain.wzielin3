@@ -13,7 +13,8 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
     public partial class MDIContainer : Form
     {
         public ApplicationModel Model { get; set; }
-        public ICollection<Form> childForms { get; set; }
+        private ICollection<Form> childForms { get; set; } = new List<Form>();
+        public int childFormsCount { get { return childForms.Count; } }
 
         public MDIContainer(ApplicationModel model)
         {
@@ -44,11 +45,26 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             AddNewForm(new TreeViewForm(Model));
         }
 
-        private void AddNewForm(Form f)
+        private void AddNewForm(ApplicationForm f)
         {
+            f.FormClosed += RemoveFormHandler;
+            f.Activated += UpdateStatusStripHandler;
+            f.PointsCountChanged += UpdateStatusStripHandler;
+            childForms.Add(f);
             f.MdiParent = this;
             f.Show();
-            Model.FormsCount++;
+        }
+
+        private void UpdateStatusStripHandler(object sender, EventArgs e)
+        {
+            var count = ((ApplicationForm)sender).PointsCount;
+            toolStripStatusLabel1.Text = $"{count} points displayed.";
+        }
+
+        private void RemoveFormHandler(object sender, FormClosedEventArgs e)
+        {
+            var form = (Form)sender;
+            childForms.Remove(form);
         }
 
         private void pointToolStripMenuItem_Click(object sender, EventArgs e)

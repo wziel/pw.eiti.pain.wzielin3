@@ -12,14 +12,22 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
 {
     public partial class TreeViewForm : ApplicationForm
     {
+        public override int PointsCount
+        {
+            get
+            {
+                return treeView.Nodes.Count;
+            }
+        }
+
         public TreeViewForm()
-            :base()
+            : base()
         {
 
         }
 
         public TreeViewForm(ApplicationModel model)
-            :base(model)
+            : base(model)
         {
             InitializeComponent();
             treeView.BeginUpdate();
@@ -37,7 +45,7 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
 
         protected override IReadOnlyCollection<PointModel> GetSelectedModels()
         {
-            if(treeView.SelectedNode == null)
+            if (treeView.SelectedNode == null)
             {
                 return new List<PointModel>();
             }
@@ -60,7 +68,6 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
 
         protected override void PointAdded(object sender, EventArgs e)
         {
-            base.PointAdded(sender, e);
             var point = (PointModel)sender;
             var mainNode = new TreeNode(point.Label);
             mainNode.Nodes.Add(point.X.ToString());
@@ -68,28 +75,28 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             mainNode.Nodes.Add(point.Color.ToString());
             mainNode.Tag = point;
             treeView.Nodes.Add(mainNode);
+            base.PointAdded(sender, e);
         }
 
         protected override void PointRemoved(object sender, EventArgs e)
         {
-            base.PointRemoved(sender, e);
             var point = (PointModel)sender;
             var i = 0;
-            foreach(var obj in treeView.Nodes)
+            foreach (var obj in treeView.Nodes)
             {
                 var node = (TreeNode)obj;
-                if(node.Tag == point)
+                if (node.Tag == point)
                 {
                     treeView.Nodes.RemoveAt(i);
-                    return;
+                    break;
                 }
                 i++;
             }
+            base.PointRemoved(sender, e);
         }
 
         protected override void PointChanged(object sender, EventArgs e)
         {
-            base.PointChanged(sender, e);
             var point = (PointModel)sender;
             var i = 0;
             foreach (var obj in treeView.Nodes)
@@ -102,10 +109,11 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
                     node.Nodes.Add(point.X.ToString());
                     node.Nodes.Add(point.Y.ToString());
                     node.Nodes.Add(point.Color.ToString());
-                    return;
+                    break;
                 }
                 i++;
             }
+            base.PointChanged(sender, e);
         }
     }
 }

@@ -12,6 +12,14 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
 {
     public partial class ListViewForm : ApplicationForm
     {
+        public override int PointsCount
+        {
+            get
+            {
+                return listView.Items.Count;
+            }
+        }
+
         public ListViewForm() :base()
         {
 
@@ -53,7 +61,6 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
         
         protected override void PointAdded(object sender, EventArgs e)
         {
-            base.PointAdded(sender, e);
             var point = (PointModel)sender;
             var item = new ListViewItem(point.Label);
             item.SubItems.Add(point.X.ToString());
@@ -61,11 +68,11 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             item.SubItems.Add(point.Color.ToString());
             item.Tag = point;
             listView.Items.Add(item);
+            base.PointAdded(sender, e);
         }
 
         protected override void PointRemoved(object sender, EventArgs e)
         {
-            base.PointRemoved(sender, e);
             var point = (PointModel)sender;
             var i = 0;
             foreach(var obj in listView.Items)
@@ -74,10 +81,11 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
                 if(item.Tag == point)
                 {
                     listView.Items.RemoveAt(i);
-                    return;
+                    break;
                 }
                 ++i;
             }
+            base.PointRemoved(sender, e);
         }
 
         protected override void PointChanged(object sender, EventArgs e)
@@ -95,7 +103,7 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
                     item.SubItems.Add(point.X.ToString());
                     item.SubItems.Add(point.Y.ToString());
                     item.SubItems.Add(point.Color.ToString());
-                    return;
+                    break;
                 }
                 ++i;
             }

@@ -206,7 +206,7 @@
             // colorControl
             // 
             this.colorControl.AutoSize = true;
-            this.colorControl.ColorType = ColorType.Green;
+            this.colorControl.ColorType = ColorType.Red;
             this.colorControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.colorControl.Location = new System.Drawing.Point(3, 3);
             this.colorControl.MinimumSize = new System.Drawing.Size(100, 20);
@@ -222,7 +222,7 @@
             this.lblColorValue.Name = "lblColorValue";
             this.lblColorValue.Size = new System.Drawing.Size(74, 13);
             this.lblColorValue.TabIndex = 9;
-            this.lblColorValue.Text = "label5";
+            this.lblColorValue.Text = "lblColorValue";
             // 
             // errorProvider
             // 

@@ -12,7 +12,10 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
 {
     public partial class ApplicationForm : Form
     {
+        public event EventHandler PointsCountChanged;
+
         protected ApplicationModel ApplicationModel { get; private set; }
+        public virtual int PointsCount { get; }
 
         public ApplicationForm()
         {
@@ -31,10 +34,18 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
 
         protected virtual void PointAdded(object sender, EventArgs e)
         {
+            if (PointsCountChanged != null)
+            {
+                PointsCountChanged.Invoke(this, null);
+            }
         }
 
         protected virtual void PointRemoved(object sender, EventArgs e)
         {
+            if (PointsCountChanged != null)
+            {
+                PointsCountChanged.Invoke(this, null);
+            }
         }
 
         protected virtual void PointChanged(object sender, EventArgs e)
@@ -67,14 +78,14 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            if(ApplicationModel.FormsCount <= 1)
+            var parent = (MDIContainer)Parent.Parent;
+            if(parent.childFormsCount <= 1)
             {
                 e.Cancel = true;
             }
             else
             {
                 base.OnClosing(e);
-                ApplicationModel.FormsCount--;
             }
         }
     }
