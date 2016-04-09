@@ -1,5 +1,4 @@
-﻿using Pw.Eiti.Pain.Wzielin3.Lab2.Forms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,10 +12,10 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
 {
     public partial class MDIContainer : Form
     {
-        internal ApplicationModel Model { get; set; }
-        internal ICollection<Form> childForms { get; set; }
+        public ApplicationModel Model { get; set; }
+        public ICollection<Form> childForms { get; set; }
 
-        internal MDIContainer(ApplicationModel model)
+        public MDIContainer(ApplicationModel model)
         {
             InitializeComponent();
             IsMdiContainer = true;
@@ -32,10 +31,6 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             var form2 = new TreeViewForm(Model);
             form2.MdiParent = this;
             form2.Show();
-
-            var newform = new NewForm();
-            newform.MdiParent = this;
-            newform.Show();
         }
 
         private void layoutToolStripMenuItem_Click(object sender, EventArgs e)

@@ -1,4 +1,4 @@
-﻿namespace Pw.Eiti.Pain.Wzielin3.Lab2.Forms
+﻿namespace Pw.Eiti.Pain.Wzielin3.Lab2
 {
     partial class NewForm
     {
@@ -37,14 +37,14 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtLabel = new System.Windows.Forms.TextBox();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnCancel = new System.Windows.Forms.Button();
             this.colorControl = new Pw.Eiti.Pain.Wzielin3.Lab2.ColorControl();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnSave = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -138,20 +138,16 @@
             this.txtLabel.TabIndex = 4;
             this.txtLabel.Validating += new System.ComponentModel.CancelEventHandler(this.txtLabel_Validating);
             // 
-            // btnSave
+            // colorControl
             // 
-            this.btnSave.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnSave.Location = new System.Drawing.Point(3, 3);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(74, 24);
-            this.btnSave.TabIndex = 8;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // errorProvider
-            // 
-            this.errorProvider.ContainerControl = this;
+            this.colorControl.AutoSize = true;
+            this.colorControl.ColorType = ColorType.Red;
+            this.colorControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorControl.Location = new System.Drawing.Point(53, 63);
+            this.colorControl.MinimumSize = new System.Drawing.Size(100, 20);
+            this.colorControl.Name = "colorControl";
+            this.colorControl.Size = new System.Drawing.Size(248, 20);
+            this.colorControl.TabIndex = 7;
             // 
             // tableLayoutPanel2
             // 
@@ -171,6 +167,17 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(248, 35);
             this.tableLayoutPanel2.TabIndex = 9;
             // 
+            // btnSave
+            // 
+            this.btnSave.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnSave.Location = new System.Drawing.Point(3, 3);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(74, 24);
+            this.btnSave.TabIndex = 8;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
             // btnCancel
             // 
             this.btnCancel.CausesValidation = false;
@@ -184,16 +191,9 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // colorControl
+            // errorProvider
             // 
-            this.colorControl.AutoSize = true;
-            this.colorControl.ColorType = ColorType.Red;
-            this.colorControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.colorControl.Location = new System.Drawing.Point(53, 63);
-            this.colorControl.MinimumSize = new System.Drawing.Size(100, 20);
-            this.colorControl.Name = "colorControl";
-            this.colorControl.Size = new System.Drawing.Size(248, 20);
-            this.colorControl.TabIndex = 7;
+            this.errorProvider.ContainerControl = this;
             // 
             // NewForm
             // 
@@ -208,8 +208,8 @@
             this.Text = "NewForm";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.ResumeLayout(false);
 
         }

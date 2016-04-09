@@ -8,25 +8,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Pw.Eiti.Pain.Wzielin3.Lab2.Forms
+namespace Pw.Eiti.Pain.Wzielin3.Lab2
 {
     public partial class NewForm : Form
     {
         private PointModel model;
 
-        public NewForm() : this(new PointModel())
+        public NewForm()
         {
             InitializeComponent();
         }
 
         public NewForm(PointModel model)
         {
+            InitializeComponent();
             this.model = model;
-        }
-
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
             txtLabel.Text = model.Label;
             txtX.Text = model.X.ToString();
             txtY.Text = model.Y.ToString();
@@ -40,7 +36,8 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2.Forms
                 model.Label = txtLabel.Text;
                 model.X = int.Parse(txtX.Text);
                 model.Y = int.Parse(txtY.Text);
-                colorControl.ColorType = model.Color;
+                model.Color = colorControl.ColorType;
+                DialogResult = DialogResult.OK;
                 Close();
             }
         }
@@ -68,6 +65,7 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2.Forms
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
+            DialogResult = DialogResult.Cancel;
             Close();
         }
     }

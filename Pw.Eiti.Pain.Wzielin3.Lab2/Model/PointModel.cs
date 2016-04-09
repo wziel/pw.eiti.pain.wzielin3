@@ -5,7 +5,12 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
 {
     public class PointModel
     {
-        public event EventHandler Changed;
+        public ApplicationModel appModel { get; set; }
+
+        public PointModel(ApplicationModel parentModel)
+        {
+            appModel = parentModel;
+        }
 
         private string label;
         public string Label
@@ -13,11 +18,11 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             get { return label; }
             set
             {
-                if (label != value && Changed != null)
+                if (label != value)
                 {
-                    Changed.Invoke(this, null);
+                    label = value;
+                    appModel.Change(this);
                 }
-                label = value;
             }
         }
 
@@ -27,11 +32,11 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             get { return x; }
             set
             {
-                if(x != value && Changed != null)
+                if(x != value)
                 {
-                    Changed.Invoke(this, null);
+                    x = value;
+                    appModel.Change(this);
                 }
-                x = value;
             }
         }
 
@@ -41,11 +46,11 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             get { return y; }
             set
             {
-                if(y != value && Changed != null)
+                if(y != value)
                 {
-                    Changed.Invoke(this, null);
+                    y = value;
+                    appModel.Change(this);
                 }
-                y = value;
             }
         }
 
@@ -55,11 +60,11 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             get { return color; }
             set
             {
-                if(color != value && Changed != null)
+                if(color != value)
                 {
-                    Changed.Invoke(this, null);
+                    color = value;
+                    appModel.Change(this);
                 }
-                color = value;
             }
         }
     }

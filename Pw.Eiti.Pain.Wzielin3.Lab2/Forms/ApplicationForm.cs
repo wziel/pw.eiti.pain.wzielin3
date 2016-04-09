@@ -14,6 +14,11 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
     {
         protected ApplicationModel ApplicationModel { get; private set; }
 
+        public ApplicationForm()
+        {
+            InitializeComponent();
+        }
+
         public ApplicationForm(ApplicationModel model)
         {
             InitializeComponent();
@@ -21,22 +26,53 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             ApplicationModel = model;
             model.PointAdded += PointAdded;
             model.PointRemoved += PointRemoved;
+            model.PointChanged += PointChanged;
         }
 
         protected virtual void PointAdded(object sender, EventArgs e)
         {
-            var model = (PointModel)sender;
-            model.Changed += PointChanged;
         }
 
         protected virtual void PointRemoved(object sender, EventArgs e)
         {
-            var model = (PointModel)sender;
-            model.Changed -= PointRemoved;
         }
 
         protected virtual void PointChanged(object sender, EventArgs e)
         {
+        }
+
+        private void AddToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var model = new PointModel(ApplicationModel);
+            var form = new NewForm(model);
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                ApplicationModel.Add(model);
+            }
+        }
+
+        private void EditToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var selected = GetSelectedModels();
+            if(selected.Count != 0)
+            {
+                var form = new NewForm(selected.First());
+                form.ShowDialog();
+            }
+        }
+
+        private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var selected = GetSelectedModels();
+            foreach(var model in selected)
+            {
+                ApplicationModel.Remove(model);
+            }
+        }
+
+        protected virtual IReadOnlyCollection<PointModel> GetSelectedModels()
+        {
+            return new List<PointModel>();
         }
     }
 }
