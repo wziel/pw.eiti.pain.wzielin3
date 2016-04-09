@@ -1,13 +1,13 @@
 ﻿namespace Pw.Eiti.Pain.Wzielin3.Lab2
 {
-    partial class MDIContainer
+    partial class ColorControl
     {
-        /// <summary>
+        /// <summary> 
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
+        /// <summary> 
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -20,24 +20,23 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        #region Component Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
+        /// <summary> 
+        /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
             this.SuspendLayout();
             // 
-            // MDIContainer
+            // ColorControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(973, 529);
-            this.Name = "MDIContainer";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.AutoSize = true;
+            this.Name = "ColorControl";
+            this.Click += new System.EventHandler(this.ColorControl_Click);
             this.ResumeLayout(false);
 
         }
@@ -45,4 +44,3 @@
         #endregion
     }
 }
-

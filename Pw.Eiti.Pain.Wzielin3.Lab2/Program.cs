@@ -15,7 +15,7 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
         static void Main()
         {
             ApplicationModel model = DataAccessLayer.GetApplicationModel();
-
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MDIContainer(model));

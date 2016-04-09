@@ -46,35 +46,62 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationModel.cs" />
-    <Compile Include="ColorType.cs" />
-    <Compile Include="DataAccessLayer.cs" />
-    <Compile Include="ListViewForm.cs">
+    <Compile Include="Controls\ColorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ColorControl.Designer.cs">
+      <DependentUpon>ColorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ApplicationForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ListViewForm.Designer.cs">
+    <Compile Include="Forms\ApplicationForm.Designer.cs">
+      <DependentUpon>ApplicationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\NewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NewForm.Designer.cs">
+      <DependentUpon>NewForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ApplicationModel.cs" />
+    <Compile Include="Model\ColorType.cs" />
+    <Compile Include="DataAccessLayer.cs" />
+    <Compile Include="Forms\ListViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ListViewForm.Designer.cs">
       <DependentUpon>ListViewForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MDIContainer.cs">
+    <Compile Include="Forms\MDIContainer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MDIContainer.Designer.cs">
+    <Compile Include="Forms\MDIContainer.Designer.cs">
       <DependentUpon>MDIContainer.cs</DependentUpon>
     </Compile>
-    <Compile Include="PointModel.cs" />
+    <Compile Include="Model\PointModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TreeViewForm.cs">
+    <Compile Include="Forms\TreeViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TreeViewForm.Designer.cs">
+    <Compile Include="Forms\TreeViewForm.Designer.cs">
       <DependentUpon>TreeViewForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="ListViewForm.resx">
+    <EmbeddedResource Include="Controls\ColorControl.resx">
+      <DependentUpon>ColorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ApplicationForm.resx">
+      <DependentUpon>ApplicationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ListViewForm.resx">
       <DependentUpon>ListViewForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MDIContainer.resx">
+    <EmbeddedResource Include="Forms\MDIContainer.resx">
       <DependentUpon>MDIContainer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NewForm.resx">
+      <DependentUpon>NewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -85,7 +112,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="TreeViewForm.resx">
+    <EmbeddedResource Include="Forms\TreeViewForm.resx">
       <DependentUpon>TreeViewForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">

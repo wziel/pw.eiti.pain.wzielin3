@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pw.Eiti.Pain.Wzielin3.Lab2.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -31,6 +32,15 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             var form2 = new TreeViewForm(Model);
             form2.MdiParent = this;
             form2.Show();
+
+            var newform = new NewForm();
+            newform.MdiParent = this;
+            newform.Show();
+        }
+
+        private void layoutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LayoutMdi(MdiLayout.TileVertical);
         }
     }
 }
