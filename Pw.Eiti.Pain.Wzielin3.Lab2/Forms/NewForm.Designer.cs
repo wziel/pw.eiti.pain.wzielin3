@@ -32,18 +32,21 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.txtY = new System.Windows.Forms.TextBox();
             this.txtX = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lblX = new System.Windows.Forms.Label();
+            this.lblLabel = new System.Windows.Forms.Label();
+            this.lblY = new System.Windows.Forms.Label();
+            this.lblColor = new System.Windows.Forms.Label();
             this.txtLabel = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.colorControl = new Pw.Eiti.Pain.Wzielin3.Lab2.ColorControl();
+            this.lblColorValue = new System.Windows.Forms.Label();
+            this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.SuspendLayout();
             // 
@@ -56,13 +59,13 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.Controls.Add(this.txtY, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.txtX, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label2, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.label4, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.lblX, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lblLabel, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lblY, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblColor, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.txtLabel, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.colorControl, 1, 3);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 1, 3);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -93,41 +96,45 @@
             this.txtX.TabIndex = 5;
             this.txtX.Validating += new System.ComponentModel.CancelEventHandler(this.txtInteger_Validating);
             // 
-            // label1
+            // lblX
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 20);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(14, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "X";
+            this.lblX.AutoSize = true;
+            this.lblX.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblX.Location = new System.Drawing.Point(3, 27);
+            this.lblX.Name = "lblX";
+            this.lblX.Size = new System.Drawing.Size(44, 13);
+            this.lblX.TabIndex = 0;
+            this.lblX.Text = "X";
             // 
-            // label2
+            // lblLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(33, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Label";
+            this.lblLabel.AutoSize = true;
+            this.lblLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblLabel.Location = new System.Drawing.Point(3, 7);
+            this.lblLabel.Name = "lblLabel";
+            this.lblLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblLabel.TabIndex = 1;
+            this.lblLabel.Text = "Label";
             // 
-            // label3
+            // lblY
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 40);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(14, 13);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Y";
+            this.lblY.AutoSize = true;
+            this.lblY.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblY.Location = new System.Drawing.Point(3, 47);
+            this.lblY.Name = "lblY";
+            this.lblY.Size = new System.Drawing.Size(44, 13);
+            this.lblY.TabIndex = 2;
+            this.lblY.Text = "Y";
             // 
-            // label4
+            // lblColor
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 60);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(31, 13);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Color";
+            this.lblColor.AutoSize = true;
+            this.lblColor.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblColor.Location = new System.Drawing.Point(3, 67);
+            this.lblColor.Name = "lblColor";
+            this.lblColor.Size = new System.Drawing.Size(44, 13);
+            this.lblColor.TabIndex = 3;
+            this.lblColor.Text = "Color";
             // 
             // txtLabel
             // 
@@ -180,20 +187,46 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // errorProvider
+            // tableLayoutPanel3
             // 
-            this.errorProvider.ContainerControl = this;
+            this.tableLayoutPanel3.ColumnCount = 2;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel3.Controls.Add(this.colorControl, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.lblColorValue, 1, 0);
+            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(50, 60);
+            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 1;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(254, 20);
+            this.tableLayoutPanel3.TabIndex = 10;
             // 
             // colorControl
             // 
             this.colorControl.AutoSize = true;
             this.colorControl.ColorType = ColorType.Green;
             this.colorControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.colorControl.Location = new System.Drawing.Point(53, 63);
+            this.colorControl.Location = new System.Drawing.Point(3, 3);
             this.colorControl.MinimumSize = new System.Drawing.Size(100, 20);
             this.colorControl.Name = "colorControl";
-            this.colorControl.Size = new System.Drawing.Size(248, 20);
-            this.colorControl.TabIndex = 7;
+            this.colorControl.Size = new System.Drawing.Size(168, 20);
+            this.colorControl.TabIndex = 8;
+            // 
+            // lblColorValue
+            // 
+            this.lblColorValue.AutoSize = true;
+            this.lblColorValue.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblColorValue.Location = new System.Drawing.Point(177, 7);
+            this.lblColorValue.Name = "lblColorValue";
+            this.lblColorValue.Size = new System.Drawing.Size(74, 13);
+            this.lblColorValue.TabIndex = 9;
+            this.lblColorValue.Text = "label5";
+            // 
+            // errorProvider
+            // 
+            this.errorProvider.ContainerControl = this;
             // 
             // NewForm
             // 
@@ -209,6 +242,8 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel3.ResumeLayout(false);
+            this.tableLayoutPanel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.ResumeLayout(false);
 
@@ -217,17 +252,19 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblX;
+        private System.Windows.Forms.Label lblLabel;
+        private System.Windows.Forms.Label lblY;
+        private System.Windows.Forms.Label lblColor;
         private System.Windows.Forms.TextBox txtY;
         private System.Windows.Forms.TextBox txtX;
         private System.Windows.Forms.TextBox txtLabel;
-        private ColorControl colorControl;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.ErrorProvider errorProvider;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private ColorControl colorControl;
+        private System.Windows.Forms.Label lblColorValue;
     }
 }

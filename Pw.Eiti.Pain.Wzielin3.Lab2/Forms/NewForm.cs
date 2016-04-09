@@ -27,6 +27,13 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             txtX.Text = model.X.ToString();
             txtY.Text = model.Y.ToString();
             colorControl.ColorType = model.Color;
+            lblColorValue.Text = model.Color.ToString();
+            colorControl.ColorChanged += ColorChanged;
+        }
+
+        private void ColorChanged(object sender, EventArgs e)
+        {
+            lblColorValue.Text = colorControl.ColorType.ToString();
         }
 
         private void btnSave_Click(object sender, EventArgs e)

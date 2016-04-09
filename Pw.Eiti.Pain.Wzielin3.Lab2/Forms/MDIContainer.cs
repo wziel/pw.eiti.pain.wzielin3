@@ -20,6 +20,7 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             InitializeComponent();
             IsMdiContainer = true;
             Model = model;
+            MainMenuStrip = menuStrip;
         }
 
         private void Form1_Load(object sender, EventArgs e)
