@@ -24,7 +24,7 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             MainMenuStrip = menuStrip;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void MDIContainer_Load(object sender, EventArgs e)
         {
             AddNewForm(new ListViewForm(Model));
             AddNewForm(new TreeViewForm(Model));
@@ -45,7 +45,7 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             AddNewForm(new TreeViewForm(Model));
         }
 
-        private void AddNewForm(ApplicationForm f)
+        private void AddNewForm(ListViewFormBase f)
         {
             f.FormClosed += RemoveFormHandler;
             f.Activated += UpdateStatusStripHandler;
@@ -57,8 +57,12 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
 
         private void UpdateStatusStripHandler(object sender, EventArgs e)
         {
-            var count = ((ApplicationForm)sender).PointsCount;
-            toolStripStatusLabel1.Text = $"{count} points displayed.";
+            var form = (ListViewFormBase)sender;
+            if(form == ActiveMdiChild)
+            {
+                var count = form.PointsCount;
+                toolStripStatusLabel1.Text = $"{count} points displayed.";
+            }
         }
 
         private void RemoveFormHandler(object sender, FormClosedEventArgs e)

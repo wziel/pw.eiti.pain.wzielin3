@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Pw.Eiti.Pain.Wzielin3.Lab2
 {
-    public partial class ListViewForm : ApplicationForm
+    public partial class ListViewForm : ListViewFormBase
     {
         public override int PointsCount
         {
@@ -29,18 +29,6 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             : base(model)
         {
             InitializeComponent();// Create a new ListView control.
-
-            listView.BeginUpdate();
-            foreach (var point in model.Points)
-            {
-                var item = new ListViewItem(point.Label);
-                item.SubItems.Add(point.X.ToString());
-                item.SubItems.Add(point.Y.ToString());
-                item.SubItems.Add(point.Color.ToString());
-                item.Tag = point;
-                listView.Items.Add(item);
-            }
-            listView.EndUpdate();
         }
 
         private void listView_MouseClick(object sender, MouseEventArgs e)
@@ -54,44 +42,34 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             }
         }
         
-        protected override IReadOnlyCollection<PointModel> GetSelectedModels()
+        protected override void Hide(PointModel point)
         {
-            return listView.SelectedItems.Cast<ListViewItem>().Select(i => (PointModel)i.Tag).ToList();
+            var i = 0;
+            foreach (var obj in listView.Items)
+            {
+                var item = (ListViewItem)obj;
+                if (item.Tag == point)
+                {
+                    listView.Items.RemoveAt(i);
+                    return;
+                }
+                ++i;
+            }
+            throw new InvalidOperationException();
         }
-        
-        protected override void PointAdded(object sender, EventArgs e)
+
+        protected override void Display(PointModel point)
         {
-            var point = (PointModel)sender;
             var item = new ListViewItem(point.Label);
             item.SubItems.Add(point.X.ToString());
             item.SubItems.Add(point.Y.ToString());
             item.SubItems.Add(point.Color.ToString());
             item.Tag = point;
             listView.Items.Add(item);
-            base.PointAdded(sender, e);
         }
 
-        protected override void PointRemoved(object sender, EventArgs e)
+        protected override void Change(PointModel point)
         {
-            var point = (PointModel)sender;
-            var i = 0;
-            foreach(var obj in listView.Items)
-            {
-                var item = (ListViewItem)obj;
-                if(item.Tag == point)
-                {
-                    listView.Items.RemoveAt(i);
-                    break;
-                }
-                ++i;
-            }
-            base.PointRemoved(sender, e);
-        }
-
-        protected override void PointChanged(object sender, EventArgs e)
-        {
-            base.PointRemoved(sender, e);
-            var point = (PointModel)sender;
             var i = 0;
             foreach (var obj in listView.Items)
             {
@@ -103,10 +81,27 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
                     item.SubItems.Add(point.X.ToString());
                     item.SubItems.Add(point.Y.ToString());
                     item.SubItems.Add(point.Color.ToString());
-                    break;
+                    return;
                 }
                 ++i;
             }
+            throw new InvalidOperationException();
+        }
+
+        protected override void ClearDisplay(IEnumerable<PointModel> points)
+        {
+            listView.BeginUpdate();
+            listView.Items.Clear();
+            foreach(var point in points)
+            {
+                Display(point);
+            }
+            listView.EndUpdate();
+        }
+
+        protected override IReadOnlyCollection<PointModel> GetSelectedModels()
+        {
+            return listView.SelectedItems.Cast<ListViewItem>().Select(i => (PointModel)i.Tag).ToList();
         }
     }
 }

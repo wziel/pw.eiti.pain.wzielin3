@@ -83,7 +83,7 @@
             this.listViewToolStripMenuItem,
             this.treeViewToolStripMenuItem});
             this.formToolStripMenuItem.Name = "formToolStripMenuItem";
-            this.formToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
+            this.formToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.formToolStripMenuItem.Text = "Form";
             // 
             // listViewToolStripMenuItem
@@ -103,16 +103,16 @@
             // pointToolStripMenuItem
             // 
             this.pointToolStripMenuItem.Name = "pointToolStripMenuItem";
-            this.pointToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
+            this.pointToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.pointToolStripMenuItem.Text = "Point";
             this.pointToolStripMenuItem.Click += new System.EventHandler(this.pointToolStripMenuItem_Click);
             // 
-            // statusStrip1
+            // statusStrip
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
             this.statusStrip.Location = new System.Drawing.Point(0, 507);
-            this.statusStrip.Name = "statusStrip1";
+            this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(973, 22);
             this.statusStrip.TabIndex = 1;
             this.statusStrip.Text = "statusStrip1";
@@ -133,7 +133,7 @@
             this.MainMenuStrip = this.menuStrip;
             this.Name = "MDIContainer";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.MDIContainer_Load);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);

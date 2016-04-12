@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Pw.Eiti.Pain.Wzielin3.Lab2
 {
-    public partial class TreeViewForm : ApplicationForm
+    public partial class TreeViewForm : ListViewFormBase
     {
         public override int PointsCount
         {
@@ -30,15 +30,72 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             : base(model)
         {
             InitializeComponent();
-            treeView.BeginUpdate();
-            foreach (var point in model.Points)
+        }
+
+        private void treeView1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
             {
-                var mainNode = new TreeNode(point.Label);
-                mainNode.Nodes.Add(point.X.ToString());
-                mainNode.Nodes.Add(point.Y.ToString());
-                mainNode.Nodes.Add(point.Color.ToString());
-                mainNode.Tag = point;
-                treeView.Nodes.Add(mainNode);
+                if (treeView.SelectedNode.Bounds.Contains(e.Location) == true)
+                {
+                    contextMenuStrip.Show(Cursor.Position);
+                }
+            }
+        }
+
+        protected override void Hide(PointModel point)
+        {
+            var i = 0;
+            foreach (var obj in treeView.Nodes)
+            {
+                var node = (TreeNode)obj;
+                if (node.Tag == point)
+                {
+                    treeView.Nodes.RemoveAt(i);
+                    return;
+                }
+                i++;
+            }
+            throw new InvalidOperationException();
+        }
+
+        protected override void Change(PointModel point)
+        {
+            var i = 0;
+            foreach (var obj in treeView.Nodes)
+            {
+                var node = (TreeNode)obj;
+                if (node.Tag == point)
+                {
+                    node.Text = point.Label;
+                    node.Nodes.Clear();
+                    node.Nodes.Add(point.X.ToString());
+                    node.Nodes.Add(point.Y.ToString());
+                    node.Nodes.Add(point.Color.ToString());
+                    return;
+                }
+                i++;
+            }
+            throw new InvalidOperationException();
+        }
+
+        protected override void Display(PointModel point)
+        {
+            var mainNode = new TreeNode(point.Label);
+            mainNode.Nodes.Add(point.X.ToString());
+            mainNode.Nodes.Add(point.Y.ToString());
+            mainNode.Nodes.Add(point.Color.ToString());
+            mainNode.Tag = point;
+            treeView.Nodes.Add(mainNode);
+        }
+
+        protected override void ClearDisplay(IEnumerable<PointModel> points)
+        {
+            treeView.BeginUpdate();
+            treeView.Nodes.Clear();
+            foreach (var point in points)
+            {
+                Display(point);
             }
             treeView.EndUpdate();
         }
@@ -53,67 +110,6 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             {
                 (PointModel)treeView.SelectedNode.Tag
             };
-        }
-
-        private void treeView1_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                if (treeView.SelectedNode.Bounds.Contains(e.Location) == true)
-                {
-                    contextMenuStrip.Show(Cursor.Position);
-                }
-            }
-        }
-
-        protected override void PointAdded(object sender, EventArgs e)
-        {
-            var point = (PointModel)sender;
-            var mainNode = new TreeNode(point.Label);
-            mainNode.Nodes.Add(point.X.ToString());
-            mainNode.Nodes.Add(point.Y.ToString());
-            mainNode.Nodes.Add(point.Color.ToString());
-            mainNode.Tag = point;
-            treeView.Nodes.Add(mainNode);
-            base.PointAdded(sender, e);
-        }
-
-        protected override void PointRemoved(object sender, EventArgs e)
-        {
-            var point = (PointModel)sender;
-            var i = 0;
-            foreach (var obj in treeView.Nodes)
-            {
-                var node = (TreeNode)obj;
-                if (node.Tag == point)
-                {
-                    treeView.Nodes.RemoveAt(i);
-                    break;
-                }
-                i++;
-            }
-            base.PointRemoved(sender, e);
-        }
-
-        protected override void PointChanged(object sender, EventArgs e)
-        {
-            var point = (PointModel)sender;
-            var i = 0;
-            foreach (var obj in treeView.Nodes)
-            {
-                var node = (TreeNode)obj;
-                if (node.Tag == point)
-                {
-                    node.Text = point.Label;
-                    node.Nodes.Clear();
-                    node.Nodes.Add(point.X.ToString());
-                    node.Nodes.Add(point.Y.ToString());
-                    node.Nodes.Add(point.Color.ToString());
-                    break;
-                }
-                i++;
-            }
-            base.PointChanged(sender, e);
         }
     }
 }
