@@ -10,16 +10,10 @@ using System.Windows.Forms;
 
 namespace Pw.Eiti.Pain.Wzielin3.Lab2
 {
-    public partial class ListViewFormBase : Form
+    public abstract partial class ListViewFormBase : Form
     {
-        public virtual event EventHandler PointsCountChanged;
-        public virtual int PointsCount
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public event EventHandler PointsCountChanged;
+        public abstract int PointsCount{ get; }
 
         protected ApplicationModel ApplicationModel { get; private set; }
         private enum FilterType
@@ -79,7 +73,7 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             PointsCountChanged?.Invoke(this, null);
         }
 
-        protected virtual void OnFilterChanged(object sender, EventArgs e)
+        private void OnFilterChanged(object sender, EventArgs e)
         {
             var filterMethod = GetCurrentFilterMethod();
             var points = ApplicationModel.Points.Where(p => filterMethod(p));
@@ -102,8 +96,10 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             var point = (PointModel)sender;
             if (GetCurrentFilterMethod()(point))
             {
-                Hide(point);
-                PointsCountChanged?.Invoke(this, null);
+                if(Hide(point))
+                {
+                    PointsCountChanged?.Invoke(this, null);
+                }
             }
         }
 
@@ -112,7 +108,15 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             var point = (PointModel)sender;
             if (GetCurrentFilterMethod()(point))
             {
-                Change(point);
+                if(!Change(point))
+                {
+                    Display(point);
+                    PointsCountChanged?.Invoke(this, null);
+                }
+            }
+            else
+            {
+                Hide(point);
             }
         }
 
@@ -148,29 +152,14 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             }
         }
 
-        protected virtual void Change(PointModel point)
-        {
-            throw new NotImplementedException();
-        }
+        protected abstract bool Change(PointModel point);
 
-        protected virtual void Hide(PointModel point)
-        {
-            throw new NotImplementedException();
-        }
+        protected abstract bool Hide(PointModel point);
 
-        protected virtual void Display(PointModel point)
-        {
-            throw new NotImplementedException();
-        }
+        protected abstract void Display(PointModel point);
 
-        protected virtual void ClearDisplay(IEnumerable<PointModel> points)
-        {
-            throw new NotImplementedException();
-        }
+        protected abstract void ClearDisplay(IEnumerable<PointModel> points);
 
-        protected virtual IReadOnlyCollection<PointModel> GetSelectedModels()
-        {
-            throw new NotImplementedException();
-        }
+        protected abstract IReadOnlyCollection<PointModel> GetSelectedModels();
     }
 }

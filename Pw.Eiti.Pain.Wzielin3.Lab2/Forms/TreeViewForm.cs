@@ -43,7 +43,7 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             }
         }
 
-        protected override void Hide(PointModel point)
+        protected override bool Hide(PointModel point)
         {
             var i = 0;
             foreach (var obj in treeView.Nodes)
@@ -52,14 +52,14 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
                 if (node.Tag == point)
                 {
                     treeView.Nodes.RemoveAt(i);
-                    return;
+                    return true;
                 }
                 i++;
             }
-            throw new InvalidOperationException();
+            return false;
         }
 
-        protected override void Change(PointModel point)
+        protected override bool Change(PointModel point)
         {
             var i = 0;
             foreach (var obj in treeView.Nodes)
@@ -72,11 +72,11 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
                     node.Nodes.Add(point.X.ToString());
                     node.Nodes.Add(point.Y.ToString());
                     node.Nodes.Add(point.Color.ToString());
-                    return;
+                    return true;
                 }
                 i++;
             }
-            throw new InvalidOperationException();
+            return false;
         }
 
         protected override void Display(PointModel point)

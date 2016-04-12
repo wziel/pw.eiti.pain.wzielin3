@@ -16,7 +16,7 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
         public void Add(PointModel model)
         {
             points.Add(model);
-            PointAdded?.Invoke(this, null);
+            PointAdded?.Invoke(model, null);
         }
 
         public void Remove(PointModel model)
