@@ -13,7 +13,7 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
     public abstract partial class ListViewFormBase : Form
     {
         public event EventHandler PointsCountChanged;
-        public abstract int PointsCount{ get; }
+        public abstract int PointsCount { get; }
 
         protected ApplicationModel ApplicationModel { get; private set; }
         private enum FilterType
@@ -96,10 +96,8 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             var point = (PointModel)sender;
             if (GetCurrentFilterMethod()(point))
             {
-                if(Hide(point))
-                {
-                    PointsCountChanged?.Invoke(this, null);
-                }
+                Hide(point);
+                PointsCountChanged?.Invoke(this, null);
             }
         }
 
@@ -108,7 +106,7 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             var point = (PointModel)sender;
             if (GetCurrentFilterMethod()(point))
             {
-                if(!Change(point))
+                if (!Change(point))
                 {
                     Display(point);
                     PointsCountChanged?.Invoke(this, null);
@@ -122,10 +120,10 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
 
         private void EditToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var selected = GetSelectedModels();
-            if (selected.Count != 0)
+            var selected = GetSelectedModels().FirstOrDefault();
+            if (selected != null)
             {
-                var form = new NewForm(selected.First());
+                var form = new NewForm(selected);
                 form.ShowDialog();
             }
         }
