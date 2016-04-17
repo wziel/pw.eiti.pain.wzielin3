@@ -80,5 +80,11 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
                 Model.Add(point);
             }
         }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            e.Cancel = false;
+            base.OnClosing(e);
+        }
     }
 }
