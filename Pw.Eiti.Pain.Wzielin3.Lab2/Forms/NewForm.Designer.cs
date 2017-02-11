@@ -70,29 +70,29 @@
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 5;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(344, 121);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(499, 287);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // txtY
             // 
             this.txtY.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtY.Location = new System.Drawing.Point(53, 43);
+            this.txtY.Location = new System.Drawing.Point(53, 55);
             this.txtY.Name = "txtY";
-            this.txtY.Size = new System.Drawing.Size(248, 20);
+            this.txtY.Size = new System.Drawing.Size(403, 20);
             this.txtY.TabIndex = 6;
             this.txtY.Validating += new System.ComponentModel.CancelEventHandler(this.txtInteger_Validating);
             // 
             // txtX
             // 
             this.txtX.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtX.Location = new System.Drawing.Point(53, 23);
+            this.txtX.Location = new System.Drawing.Point(53, 29);
             this.txtX.Name = "txtX";
-            this.txtX.Size = new System.Drawing.Size(248, 20);
+            this.txtX.Size = new System.Drawing.Size(403, 20);
             this.txtX.TabIndex = 5;
             this.txtX.Validating += new System.ComponentModel.CancelEventHandler(this.txtInteger_Validating);
             // 
@@ -100,7 +100,7 @@
             // 
             this.lblX.AutoSize = true;
             this.lblX.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lblX.Location = new System.Drawing.Point(3, 27);
+            this.lblX.Location = new System.Drawing.Point(3, 39);
             this.lblX.Name = "lblX";
             this.lblX.Size = new System.Drawing.Size(44, 13);
             this.lblX.TabIndex = 0;
@@ -110,7 +110,7 @@
             // 
             this.lblLabel.AutoSize = true;
             this.lblLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lblLabel.Location = new System.Drawing.Point(3, 7);
+            this.lblLabel.Location = new System.Drawing.Point(3, 13);
             this.lblLabel.Name = "lblLabel";
             this.lblLabel.Size = new System.Drawing.Size(44, 13);
             this.lblLabel.TabIndex = 1;
@@ -120,7 +120,7 @@
             // 
             this.lblY.AutoSize = true;
             this.lblY.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lblY.Location = new System.Drawing.Point(3, 47);
+            this.lblY.Location = new System.Drawing.Point(3, 65);
             this.lblY.Name = "lblY";
             this.lblY.Size = new System.Drawing.Size(44, 13);
             this.lblY.TabIndex = 2;
@@ -130,7 +130,7 @@
             // 
             this.lblColor.AutoSize = true;
             this.lblColor.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lblColor.Location = new System.Drawing.Point(3, 67);
+            this.lblColor.Location = new System.Drawing.Point(3, 233);
             this.lblColor.Name = "lblColor";
             this.lblColor.Size = new System.Drawing.Size(44, 13);
             this.lblColor.TabIndex = 3;
@@ -141,7 +141,7 @@
             this.txtLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtLabel.Location = new System.Drawing.Point(53, 3);
             this.txtLabel.Name = "txtLabel";
-            this.txtLabel.Size = new System.Drawing.Size(248, 20);
+            this.txtLabel.Size = new System.Drawing.Size(403, 20);
             this.txtLabel.TabIndex = 4;
             this.txtLabel.Validating += new System.ComponentModel.CancelEventHandler(this.txtLabel_Validating);
             // 
@@ -155,12 +155,12 @@
             this.tableLayoutPanel2.Controls.Add(this.btnSave, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.btnCancel, 1, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(53, 83);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(53, 249);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(248, 35);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(403, 35);
             this.tableLayoutPanel2.TabIndex = 9;
             // 
             // btnSave
@@ -195,12 +195,12 @@
             this.tableLayoutPanel3.Controls.Add(this.colorControl, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.lblColorValue, 1, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(50, 60);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(50, 78);
             this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(254, 20);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(409, 168);
             this.tableLayoutPanel3.TabIndex = 10;
             // 
             // colorControl
@@ -211,14 +211,14 @@
             this.colorControl.Location = new System.Drawing.Point(3, 3);
             this.colorControl.MinimumSize = new System.Drawing.Size(100, 20);
             this.colorControl.Name = "colorControl";
-            this.colorControl.Size = new System.Drawing.Size(168, 20);
+            this.colorControl.Size = new System.Drawing.Size(323, 162);
             this.colorControl.TabIndex = 8;
             // 
             // lblColorValue
             // 
             this.lblColorValue.AutoSize = true;
             this.lblColorValue.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lblColorValue.Location = new System.Drawing.Point(177, 7);
+            this.lblColorValue.Location = new System.Drawing.Point(332, 155);
             this.lblColorValue.Name = "lblColorValue";
             this.lblColorValue.Size = new System.Drawing.Size(74, 13);
             this.lblColorValue.TabIndex = 9;
@@ -234,7 +234,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(344, 121);
+            this.ClientSize = new System.Drawing.Size(499, 287);
             this.Controls.Add(this.tableLayoutPanel1);
             this.MinimumSize = new System.Drawing.Size(360, 160);
             this.Name = "NewForm";

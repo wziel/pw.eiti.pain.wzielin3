@@ -115,6 +115,7 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
             else
             {
                 Hide(point);
+                PointsCountChanged?.Invoke(this, null);
             }
         }
 

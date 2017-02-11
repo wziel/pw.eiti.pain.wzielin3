@@ -36,7 +36,7 @@ namespace Pw.Eiti.Pain.Wzielin3.Lab2
         {
             if (e.Button == MouseButtons.Right)
             {
-                if (treeView.SelectedNode.Bounds.Contains(e.Location) == true)
+                if (treeView.SelectedNode?.Bounds.Contains(e.Location) == true)
                 {
                     contextMenuStrip.Show(Cursor.Position);
                 }
